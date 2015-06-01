@@ -7,13 +7,27 @@ class Model_users extends CI_Model{
 		$this->db->where('username',$posted_data['Username']);
 		$this->db->where('password',md5($posted_data['Password']));
 
-		$query = $this->db->get('tbusers');
+		$query = $this->db->get('tbusers');		
+		$dataset = $query->row_array();
 		//print_r($this->db->last_query());
 		//print_r($query->num_rows());
-		if($query->num_rows()==1){
-			return true;
-		} else {			
-			return false;
+		//if($query->num_rows()==1){
+		//	$dataset = $query->row_array();
+		//	$data = array(
+		//			'username' => $dataset['Username'],
+		//			'is_logged_in' => 1
+		//		);
+		//	$this->session->set_userdata($data);
+		//	return true;
+		//} else {			
+		//	return false;
+		//}
+		echo json_encode($dataset);
+		if(count($dataset)>0){
+			echo $this->session->set_userdata($dataset);
+			echo true;
+		} else{
+			echo false;
 		}
 	}
 

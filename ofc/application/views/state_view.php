@@ -10,8 +10,8 @@
 	    page_no = 1;
 	    per_page = 5;
 	    $(document).ready(function () {
-	        getState();
 	        getCountry();	        
+	        getState();	        
 	    });
 	    function getCountry() {
 	        $.ajax({
@@ -51,10 +51,10 @@
                 valid = 0;
             } 
             if (valid) {
-            	alert($('#StateName').val());
+            	//alert($('#StateName').val());
                 $.ajax({
                     type: 'POST',
-                    data: {'StateName':$('#StateName').val(), 'CountryId': $('.slctcountry').val()},
+                    data: $('.frmstate :input').serialize(),
                     url: base_url + 'admin/addState',
                     success: function (response) {
                     	alert(response);
@@ -182,5 +182,6 @@
 
             </div>
 </div>
+
 </body>
 </html>

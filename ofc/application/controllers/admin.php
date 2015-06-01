@@ -46,18 +46,23 @@ class Admin extends CI_Controller{
 		if($this->form_validation->run()){
 			$this->load->model('Model_country');
 			$country = array(
-				'CountryName' =>$this->input->post('CountryName')
+				'CountryName' =>$this->input->post('CountryName'),
+				'CreatedOn' =>date("Y-m-d H:i:s"),
+				'ModifiedOn' =>date("Y-m-d H:i:s"),
+				'CreatedBy' => $this->session->userdata('UserId'),
+				'ModifiedBy' => $this->session->userdata('UserId'),
+				'IsActive' => 1
 			);
-			echo $country;
+			print_r($this->session->userdata);
 			if($this->Model_country->insert_country($country)){
-				$this->load->view('thanks_view');
+				//$this->load->view('thanks_view');
 			} else{
-				$this->form_validation->set_message('addCountry','Error in Inserting country record.');				
-				$this->load->view('country_view');
+				//$this->form_validation->set_message('addCountry','Error in Inserting country record.');				
+				//$this->load->view('country_view');
 			}
 			
 		} else {			
-			$this->Country();
+			//$this->Country();
 		}
 	}
 

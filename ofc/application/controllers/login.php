@@ -35,12 +35,12 @@ class Login extends CI_Controller {
 		$this->form_validation->set_rules('Username','Username','required|trim|xss_clean|callback_validate_credentials');
 		$this->form_validation->set_rules('Password','Password','required|md5|trim');
 		if($this->form_validation->run()){
-			$posted_data = $this->input->post();
-			$data = array(
-					'username' => $posted_data['Username'],
-					'is_logged_in' => 1
-				);
-			$this->session->set_userdata($data);
+			//$posted_data = $this->input->post();
+			//$data = array(
+			//		'username' => $posted_data['Username'],
+			//		'is_logged_in' => 1
+			//	);
+			//$this->session->set_userdata($data);
 			echo true;
 		}
 		else{
