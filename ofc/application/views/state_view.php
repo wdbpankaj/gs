@@ -11,7 +11,7 @@
 	    per_page = 5;
 	    $(document).ready(function () {
 	        getCountry();	        
-	        getState();	        
+	        getState($('.slctcountry').val());	        
 	    });
 	    function getCountry() {
 	        $.ajax({
@@ -33,7 +33,7 @@
 	        });
         }
 
-        function getState() {
+        function getState(countryId) {
 	        $.ajax({
 	            type: 'POST',
 	            data: 'page_no=' + page_no + '&per_page=' + per_page,

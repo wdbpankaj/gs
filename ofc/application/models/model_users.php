@@ -11,24 +11,43 @@ class Model_users extends CI_Model{
 		$dataset = $query->row_array();
 		//print_r($this->db->last_query());
 		//print_r($query->num_rows());
-		//if($query->num_rows()==1){
-		//	$dataset = $query->row_array();
-		//	$data = array(
-		//			'username' => $dataset['Username'],
-		//			'is_logged_in' => 1
-		//		);
-		//	$this->session->set_userdata($data);
-		//	return true;
-		//} else {			
-		//	return false;
-		//}
-		echo json_encode($dataset);
+		//$query->num_rows()
+		
+		//"UserId":"1",
+		//"FirstName":"a","LastName":"a","UserName":"a@a.com",
+		//"InsanNo":"123","MobileNo":"321","Email":"321@a.com",
+		//"IsAnonymous":"0","IsApproved":"0","IsLockedOut":"0",
+		//"LastLoginDate":"0000-00-00 00:00:00",
+		//"LastPasswordChangeDate":"0000-00-00 00:00:00",
+		//"LastLockedoutDate":"0000-00-00 00:00:00",
+		//"PasswordQuestion":"321",
+		//"PasswordAnswer":"321",
+		//"FailedPasswordAttemptCount":"0",
+		//"FailedPasswordAnswerAttemptCount":"0",
+		//"CreatedOn":"0000-00-00 00:00:00","ModifiedOn":"0000-00-00 00:00:00",
+		//"CreatedBy":null,"ModifiedBy":null,
+		//"IsActive":null
+		
 		if(count($dataset)>0){
-			echo $this->session->set_userdata($dataset);
-			echo true;
+			if($dataset['IsApproved'] && !$dataset['IsLockedOut'] && $dataset['IsActive']){
+				$this->setSessionData($dataset);
+				return true;
+			}else{
+				return false;
+			}
 		} else{
-			echo false;
+			return false;
 		}
+	}
+
+	public function setSessionData($data){
+		$this->session->set_userdata(
+			array(
+					'userid' => $data['UserId'],
+					'username' => $data['UserName'],
+					'is_logged_in' => 1
+				)
+		);
 	}
 
 	public function check_username(){

@@ -25,17 +25,19 @@ class Admin extends CI_Controller{
 	}
 
 	function getcountries(){
-		echo json_encode($this->db->select('*')->order_by('CountryName')->get('tbcountry')->result_array());
-		//return $data;
+		$this->load->model('Model_country');
+		echo json_encode($this->Model_country->get_country());
+		//echo json_encode($this->db->select('*')->order_by('CountryName')->get('tbcountry')->result_array());		
 	}
+
 	function country_list() {
+		$this->load->model('Model_country');
         $data['page_no'] = $this->input->post('page_no');
         $data['per_page'] = $this->input->post('per_page');
-
-        $data['total_record'] = $this->db->select('count(1) as cnt')->get('tbcountry')->row()->cnt;
+        $data['total_record'] = $this->Model_country->get_Total(); //$this->db->select('count(1) as cnt')->get('tbcountry')->row()->cnt;
 
         $this->db->limit($data['per_page'], ($data['page_no'] - 1) * $data['per_page']);
-        $data['country_data'] = $this->db->select('*')->order_by('CountryId desc')->get('tbcountry')->result_array();
+        $data['country_data'] = $this->Model_country->get_country(); // $this->db->select('*')->order_by('CountryId desc')->get('tbcountry')->result_array();
         $this->load->view('countrylist_view', $data);
     }
 
@@ -53,16 +55,15 @@ class Admin extends CI_Controller{
 				'ModifiedBy' => $this->session->userdata('UserId'),
 				'IsActive' => 1
 			);
-			print_r($this->session->userdata);
 			if($this->Model_country->insert_country($country)){
-				//$this->load->view('thanks_view');
+				echo 1;
 			} else{
-				//$this->form_validation->set_message('addCountry','Error in Inserting country record.');				
-				//$this->load->view('country_view');
+				$this->form_validation->set_message('addCountry','Error in Inserting country record.');				
+				$this->load->view('country_view');
 			}
 			
 		} else {			
-			//$this->Country();
+			$this->Country();
 		}
 	}
 
@@ -117,7 +118,12 @@ class Admin extends CI_Controller{
 			$this->load->model('model_application');
 			$application = array(
 				'ApplicationName' =>$this->input->post('ApplicationName'),
-				'Description' =>$this->input->post('Description')
+				'Description' =>$this->input->post('Description'),
+				'CreatedOn' =>date("Y-m-d H:i:s"),
+				'ModifiedOn' =>date("Y-m-d H:i:s"),
+				'CreatedBy' => $this->session->userdata('UserId'),
+				'ModifiedBy' => $this->session->userdata('UserId'),
+				'IsActive' => 1
 			);
 			if($this->model_application->insert_application($application)){
 				echo 1;
@@ -134,18 +140,27 @@ class Admin extends CI_Controller{
 
 //***************************************************** STATE METHODS STARTS ***************************************
 	function State(){
-		$this->load->model('model_state');
-		$posted_data = $this->input->post();
-		$data['state'] = $this->model_state->get_state($posted_data['CountryId']);
-		$this->load->view('state_view');
+		if($this->session->userdata('is_logged_in')){
+			$this->load->model('model_state');
+			echo json_encode($data['state'] = $this->model_state->get_state($this->input->post('CountryId')));
+			$this->load->view('state_view');
+		} else {
+			redirect('admin/restricted');
+		}		
 	}
 
 	function state_list() {
-        $data['page_no'] = $this->input->post('page_no');
+        $this->load->model('model_state');
+		
+		$data['page_no'] = $this->input->post('page_no');
         $data['per_page'] = $this->input->post('per_page');
-        $data['total_record'] = $this->db->select('count(1) as cnt')->get('tbstate')->row()->cnt;
+        
+        $data['total_record'] = $this->model_state->getTotal(); // $this->db->select('count(1) as cnt')->get('tbstate')->row()->cnt;
+        
         $this->db->limit($data['per_page'], ($data['page_no'] - 1) * $data['per_page']);
-        $data['state_data'] = $this->db->select('*')->order_by('StateId desc')->get('tbstate')->result_array();
+        
+        $data['state_data'] = $this->model_state->get_state($this->input->post('CountryId')); // $this->db->select('*')->order_by('StateId desc')->get('tbstate')->result_array();
+        
         $this->load->view('statelist_view', $data);
     }
 
@@ -155,7 +170,12 @@ class Admin extends CI_Controller{
 		$state = array(
 			'StateId' => $this->input->post('StateId'),
 			'CountryId' =>$this->input->post('CountryId'),
-			'StateName' =>$this->input->post('StateName')
+			'StateName' =>$this->input->post('StateName'),
+			'CreatedOn' =>date("Y-m-d H:i:s"),
+			'ModifiedOn' =>date("Y-m-d H:i:s"),
+			'CreatedBy' => $this->session->userdata('UserId'),
+			'ModifiedBy' => $this->session->userdata('UserId'),
+			'IsActive' => 1
 		);
 		echo $this->model_state->update_state($state);			
 	}

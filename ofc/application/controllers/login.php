@@ -29,24 +29,20 @@ class Login extends CI_Controller {
 	public function signup(){
 		$this->load->view('signup');
 	}
+
 	public function login_validation()
 	{
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('Username','Username','required|trim|xss_clean|callback_validate_credentials');
 		$this->form_validation->set_rules('Password','Password','required|md5|trim');
 		if($this->form_validation->run()){
-			//$posted_data = $this->input->post();
-			//$data = array(
-			//		'username' => $posted_data['Username'],
-			//		'is_logged_in' => 1
-			//	);
-			//$this->session->set_userdata($data);
-			echo true;
+			echo 1;
 		}
 		else{
-			echo false;
+			echo 0;
 		}
 	}
+
 	public function signup_validation(){
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('username','Username','required|trim|valid_email|is_unique[tbusers.username]|callback_validate_username');
