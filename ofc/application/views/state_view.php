@@ -5,6 +5,7 @@
 	<title>State</title>
 	<script type="text/javascript" src="<?php echo base_url(); ?>resources/js/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>resources/plugin/pagination/jquery.simplePagination.js"></script>
+    <link href="<?php echo base_url(); ?>resources/plugin/pagination/simplePagination.css" rel="stylesheet" type="text/css"/>
     <script>
         var base_url = '<?php echo base_url(); ?>';
 	    page_no = 1;
@@ -112,7 +113,37 @@
         }
 
     </script>
-    <link href="<?php echo base_url(); ?>resources/plugin/pagination/simplePagination.css" rel="stylesheet" type="text/css"/>
+    <script>
+	    var sname='';
+	    $("a#edit").click(function(){
+	        var val = $(this).closest('tr').find(".StateName").text();
+	        sname = val;
+	        var txt = '<input type="text" name="edit_name" id="edit_name" value="' + val + '"/>';
+	        $(this).closest('tr').find(".StateName").html(txt);
+	        $(this).css('display','none');
+	        $(this).closest('tr').find("#delete").css('display','none');
+	        $(this).closest('tr').find("#update").css('display','');
+	        $(this).closest('tr').find("#cancel").css('display','');        
+	    });
+
+	    $("a#cancel").click(function(){
+	        $(this).closest('tr').find(".StateName").html(sname);
+	        $(this).css('display','none');
+	        $(this).closest('tr').find("#delete").css('display','');
+	        $(this).closest('tr').find("#edit").css('display','');
+	        $(this).closest('tr').find("#update").css('display','none');
+	    });
+
+	    $("a#update").click(function(){
+	        var val = $(this).closest('tr').find(".StateId").text();
+	        updateRecord(val);
+	    });
+
+	    function getGridData(){
+	    	var id = $('.slctcountry').val();
+	    	getState(id);
+	    }	    
+	</script>
     <style type="text/css">
 
 	::selection{ background-color: #E13300; color: white; }

@@ -155,9 +155,9 @@ class Admin extends CI_Controller{
         $data['per_page'] = $this->input->post('per_page');
         $data['total_record'] = $this->model_state->getTotalByCountry($this->input->post('CountryId')); // $this->db->select('count(1) as cnt')->get('tbstate')->row()->cnt;        
         $this->db->limit($data['per_page'], ($data['page_no'] - 1) * $data['per_page']);
-        $data['state_data'] = $this->model_state->get_state($this->input->post('CountryId')); // $this->db->select('*')->order_by('StateId desc')->get('tbstate')->result_array();
+        $data['dataset'] = $this->model_state->get_state($this->input->post('CountryId')); // $this->db->select('*')->order_by('StateId desc')->get('tbstate')->result_array();
         //echo json_encode($data);
-        $this->load->view('statelist_view', $data);
+        $this->load->view('list_view', $data);
     }
 
 	function updateState(){

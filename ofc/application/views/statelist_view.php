@@ -5,16 +5,6 @@
         <th>State Name</th>
         <th></th>
     </tr>
-    <tr>
-    <?php
-    foreach ($state_data as $key => $value) {
-            foreach ($value as $k => $v) {
-                echo $k;
-                echo '<th>'.$k.'</th>';
-            }      
-         }
-    ?>       
-    </tr>
     <?php
         foreach ($state_data as $key => $value) {            
             echo '<tr>';
