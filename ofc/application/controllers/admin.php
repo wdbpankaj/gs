@@ -142,7 +142,7 @@ class Admin extends CI_Controller{
 	function State(){
 		if($this->session->userdata('is_logged_in')){
 			$this->load->model('model_state');
-			echo json_encode($data['state'] = $this->model_state->get_state($this->input->post('CountryId')));
+			$data['state'] = $this->model_state->get_state($this->input->post('CountryId'));
 			$this->load->view('state_view');
 		} else {
 			redirect('admin/restricted');
@@ -150,17 +150,13 @@ class Admin extends CI_Controller{
 	}
 
 	function state_list() {
-        $this->load->model('model_state');
-		
+        $this->load->model('model_state');		
 		$data['page_no'] = $this->input->post('page_no');
         $data['per_page'] = $this->input->post('per_page');
-        
-        $data['total_record'] = $this->model_state->getTotal(); // $this->db->select('count(1) as cnt')->get('tbstate')->row()->cnt;
-        
+        $data['total_record'] = $this->model_state->getTotalByCountry($this->input->post('CountryId')); // $this->db->select('count(1) as cnt')->get('tbstate')->row()->cnt;        
         $this->db->limit($data['per_page'], ($data['page_no'] - 1) * $data['per_page']);
-        
         $data['state_data'] = $this->model_state->get_state($this->input->post('CountryId')); // $this->db->select('*')->order_by('StateId desc')->get('tbstate')->result_array();
-        
+        //echo json_encode($data);
         $this->load->view('statelist_view', $data);
     }
 
@@ -177,26 +173,39 @@ class Admin extends CI_Controller{
 			'ModifiedBy' => $this->session->userdata('UserId'),
 			'IsActive' => 1
 		);
-		echo $this->model_state->update_state($state);			
+		if($this->model_state->update_state($state)){
+			echo 1;
+		}else{
+			echo 0;
+		}
 	}
 
 	function addState(){
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('StateName','StateName','required|trim|xss_clean');		
-		$this->form_validation->set_rules('CountryId','CountryId','trim|xss_clean');
-		
-		if($this->form_validation->run()){
-			$this->load->model('model_state');
-			$state = array(
-							'StateId' => $this->input->post('StateId'),
-							'CountryId' =>$this->input->post('CountryId'),
-							'StateName' =>$this->input->post('StateName')
-						);
-			if($this->model_state->insert_state($state)){
-				echo "Record Saved!";
-			} else{
-				echo "Invalid Entry";
+		if($this->session->userdata('is_logged_in')){
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('StateName','StateName','required|trim|xss_clean');		
+			$this->form_validation->set_rules('CountryId','CountryId','trim|xss_clean');
+			
+			if($this->form_validation->run()){
+				$this->load->model('model_state');
+				$state = array(
+								'CountryId' =>$this->input->post('CountryId'),
+								'StateName' =>$this->input->post('StateName'),
+								'CreatedOn' =>date("Y-m-d H:i:s"),
+								'ModifiedOn' =>date("Y-m-d H:i:s"),
+								'CreatedBy' => $this->session->userdata('UserId'),
+								'ModifiedBy' => $this->session->userdata('UserId'),
+								'IsActive' => 1
+							);
+				echo json_encode($state);
+				if($this->model_state->insert_state($state)){
+					echo "Record Saved!";
+				} else{
+					echo "Invalid Entry";
+				}
 			}
+		} else {
+			redirect('admin/restricted');
 		}
 	}
 }	

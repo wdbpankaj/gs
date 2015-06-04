@@ -9,10 +9,16 @@
         var base_url = '<?php echo base_url(); ?>';
 	    page_no = 1;
 	    per_page = 5;
+	    
 	    $(document).ready(function () {
-	        getCountry();	        
-	        getState($('.slctcountry').val());	        
+	        getCountry();
+	        
+	        $(".slctcountry").change(function() {
+	        	var id = $('.slctcountry').val();
+	        	getState(id);
+	        });
 	    });
+
 	    function getCountry() {
 	        $.ajax({
 	            type: 'POST',
@@ -20,11 +26,13 @@
 	            url: base_url + 'admin/getcountries',
 	            success: function (response) {
 	            	if(response){
+	            		//alert(response);
 	            		cnt = eval(response);
 		            	$.each(cnt, function() {
 	    					var option = $('<option>').attr('value', this.CountryId).html(this.CountryName);
 	    					$('.slctcountry').append(option);
 						});
+						$(".slctcountry").trigger('change');
 	            	}else{
 	            		var option = $('<option>').attr('value', null).html("--Select--");
 	    					$('.slctcountry').append(option);
@@ -36,7 +44,7 @@
         function getState(countryId) {
 	        $.ajax({
 	            type: 'POST',
-	            data: 'page_no=' + page_no + '&per_page=' + per_page,
+	            data: {'page_no': page_no, 'per_page': per_page, 'CountryId': countryId}, //'page_no=' + page_no + '&per_page=' + per_page + '&CountryId=' + countryId,
 	            url: base_url + 'admin/state_list',
 	            success: function (response) {
 	            	//alert(response);
@@ -46,6 +54,8 @@
         }        
         function saveRecord() {
             var valid = 1;
+            var countryid = $('.slctcountry').val();
+            var stateName = $('#StateName').val();
             if ($('#StateName').val() == '') {
                 alert('Please enter State name.');
                 valid = 0;
@@ -54,13 +64,13 @@
             	//alert($('#StateName').val());
                 $.ajax({
                     type: 'POST',
-                    data: $('.frmstate :input').serialize(),
+                    data: {'StateName': stateName, 'CountryId': countryid}, //$('.frmstate :input').serialize(),
                     url: base_url + 'admin/addState',
                     success: function (response) {
                     	alert(response);
                         $('.frmstate :input').not('[type="button"]').val('');
                         page_no = 1;
-                        getState();
+                        getState(countryid);
                     }
                 });
             }
@@ -68,36 +78,38 @@
         
         function deleteRecord(StateId) {
             var conf = confirm('Are you sure to delete this record.');
+            var countryid = $('.slctcountry').val();
             if (conf) {
                 $.ajax({
                     type: 'POST',
                     data: {'StateId': StateId},
                     url: base_url + 'admin/State_delete',
                     success: function (response) {
-                        getState();
+                        getState(countryid);
                     }
                 });
             }
         }
 
-	        function updateRecord(State_id) {
-	            var conf = confirm('Are you sure to update state name.');
-	            var edit_name = $('#edit_name').val();
-	            if (conf) {
-	                $.ajax({
-	                    type: 'POST',
-	                    data: {'StateId': State_id, 'StateName': edit_name},
-	                    url: base_url + 'admin/updateState',
-	                    success: function (response) {                    	
-	                    	if (response) {
-	                            getState();
-	                        } else {
-	                        	
-	                        }
-	                    }
-	                });
-	            }
-	        }
+        function updateRecord(StateId) {
+            var conf = confirm('Are you sure to update state name.');
+            var edit_name = $('#edit_name').val();
+            var countryid = $('.slctcountry').val();
+            if (conf) {
+                $.ajax({
+                    type: 'POST',
+                    data: {'StateId': StateId, 'StateName': edit_name, 'CountryId': countryid},
+                    url: base_url + 'admin/updateState',
+                    success: function (response) {                    	
+                    	if (response) {
+                            getState(countryid);
+                        } else {
+                        	alert('Error updating Record');
+                        }
+                    }
+                });
+            }
+        }
 
     </script>
     <link href="<?php echo base_url(); ?>resources/plugin/pagination/simplePagination.css" rel="stylesheet" type="text/css"/>

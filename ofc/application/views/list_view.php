@@ -2,37 +2,26 @@
 <table>
     <tr>
         <th style="display:none;">State Id</th>
-        <th>State Name</th>
+        <th>$headerName</th>
         <th></th>
     </tr>
-    <tr>
     <?php
     foreach ($state_data as $key => $value) {
-            foreach ($value as $k => $v) {
-                echo $k;
-                echo '<th>'.$k.'</th>';
-            }      
-         }
-    ?>       
-    </tr>
-    <?php
-        foreach ($state_data as $key => $value) {            
-            echo '<tr>';
-            echo '<td class="id" style="display:none;">' . $value['StateId'] . '</td>';
-            echo '<td class="name">' . $value['StateName'] . '</td>';
-            echo '<td>'
-            . '<div class="set1">'
-            . '<a href="javascript:;" style="display:;" id="edit">Edit</a> '
-            . '<a href="javascript:;" style="display:;" id="delete">Delete</a>'
-            . '</div>'
-            . '<div class="set2">'
-            . '<a href="javascript:;" style="display:none;" id="update">Update</a> '
-            . '<a href="javascript:;" style="display:none;" id="cancel">Cancel</a> '
-            . '</div>'
-            . '</td>';
-            echo '</tr>';
-        }
-    
+        echo '<tr>';
+        echo '<td class="id" style="display:none;">' . $value['StateId'] . '</td>';
+        echo '<td class="name">' . $value['StateName'] . '</td>';
+        echo '<td>'
+        . '<div class="set1">'
+        . '<a href="javascript:;" style="display:;" id="edit">Edit</a> '
+        . '<a href="javascript:;" style="display:;" id="delete">Delete</a>'
+        . '</div>'
+        . '<div class="set2">'
+        . '<a href="javascript:;" style="display:none;" id="update">Update</a> '
+        . '<a href="javascript:;" style="display:none;" id="cancel">Cancel</a> '
+        . '</div>'
+        . '</td>';
+        echo '</tr>';
+    }
     ?>
 </table>
 <script>
